@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增日程管理')" />
+    <th:block th:include="include :: datetimepicker-css" />
+<th:block th:include="include :: select2-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-richeng-add">
+            <div  class="form-group">    
+                <label class="col-sm-3 control-label is-required">级别：</label>
+                <div class="col-sm-8">
+                    <select name="jibie" class="form-control m-b" th:with="type=${@dict.getType('jibie')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div shiro:hasAnyRoles="admin,guanli" class="form-group">    
+                <label class="col-sm-3 control-label is-required">人员：</label>
+                <div class="col-sm-8"> 
+                    <select   name="toUser" class="form-control  ">
+                    
+	<option value="" >我</option>
+	<option th:each="i : ${list}" th:text="${i.loginName+'('+i.userName+')'}" th:value="${i.loginName}" ></option>
+</select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">内容：</label>
+                <div class="col-sm-8">
+                    <textarea name="content" class="form-control" required></textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">开始时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="beginTime" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">结束时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="endTime" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+       <input name="updateBy" id="updateBy" value="" type="hidden">
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+<th:block th:include="include :: select2-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/richeng"
+        $("#form-richeng-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.submit1(prefix + "/add", $('#form-richeng-add').serialize(),function(res){
+                	
+                	if(res.code == 500){ 
+                		
+                    	$.modal.confirm1(res.msg, function() {
+                    		$("#updateBy").val("111")
+                    		$.operate.save(prefix + "/add", $('#form-richeng-add').serialize());
+                    	},function(){
+                    		$.modal.closeLoading(); 
+                    		});
+                	}else{ 
+                		$.operate.saveSuccess(res);
+                	}
+                });
+            }
+        }
+
+        $("input[name='beginTime']").datetimepicker({
+            format: "yyyy-mm-dd hh:ii",
+            minView: "hour",
+            autoclose: true
+        });
+
+        $("input[name='endTime']").datetimepicker({
+        	 format: "yyyy-mm-dd hh:ii",
+             minView: "hour",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

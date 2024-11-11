@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.project.system.richeng.mapper.TRichengMapper">
+    
+    <resultMap type="TRicheng" id="TRichengResult">
+        <result property="id"    column="id"    />
+        <result property="jibie"    column="jibie"    />
+        <result property="toUser"    column="to_user"    />
+        <result property="content"    column="content"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="state"    column="state"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="fabuzhe"    column="fabuzhe"    />
+    </resultMap>
+
+    <sql id="selectTRichengVo">
+        select x.id, x.jibie, x.to_user, x.content, x.begin_time, x.end_time, x.state, x.create_by, x.fabuzhe from t_richeng x
+    </sql>
+
+    <select id="selectTRichengList" parameterType="TRicheng" resultMap="TRichengResult">
+        <include refid="selectTRichengVo"/>
+        <where>  
+            <if test="jibie != null  and jibie != ''"> and x.jibie = #{jibie}</if>
+            <if test="toUser != null  and toUser != ''"> and x.to_user = #{toUser}</if>
+            <if test="content != null  and content != ''"> and x.content like concat('%', #{content}, '%')</if>
+            <if test="params.beginBeginTime != null and params.beginBeginTime != '' and params.endBeginTime != null and params.endBeginTime != ''"> and x.begin_time between #{params.beginBeginTime} and #{params.endBeginTime}</if>
+            <if test="params.beginEndTime != null and params.beginEndTime != '' and params.endEndTime != null and params.endEndTime != ''"> and x.end_time between #{params.beginEndTime} and #{params.endEndTime}</if>
+            <if test="state != null  and state != ''"> and x.state = #{state}</if>
+            <if test="createBy != null  and createBy != ''"> and x.create_by = #{createBy}</if>
+            <if test="fabuzhe != null  and fabuzhe != ''"> and x.fabuzhe = #{fabuzhe}</if>
+        </where>
+    </select>
+    
+    <select id="selectTRichengById" parameterType="Long" resultMap="TRichengResult">
+        <include refid="selectTRichengVo"/>
+        where x.id = #{id}
+    </select>
+        
+    <insert id="insertTRicheng" parameterType="TRicheng" useGeneratedKeys="true" keyProperty="id">
+        insert into t_richeng
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jibie != null and jibie != ''">jibie,</if>
+            <if test="toUser != null and toUser != ''">to_user,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="beginTime != null">begin_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="state != null">state,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="fabuzhe != null">fabuzhe,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jibie != null and jibie != ''">#{jibie},</if>
+            <if test="toUser != null and toUser != ''">#{toUser},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="beginTime != null">#{beginTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="state != null">#{state},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="fabuzhe != null">#{fabuzhe},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTRicheng" parameterType="TRicheng">
+        update t_richeng
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jibie != null and jibie != ''">jibie = #{jibie},</if>
+            <if test="toUser != null and toUser != ''">to_user = #{toUser},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="beginTime != null">begin_time = #{beginTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="fabuzhe != null">fabuzhe = #{fabuzhe},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTRichengById" parameterType="Long">
+        delete from t_richeng where id = #{id}
+    </delete>
+
+    <delete id="deleteTRichengByIds" parameterType="String">
+        delete from t_richeng where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
